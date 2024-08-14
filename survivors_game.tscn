@@ -1,0 +1,123 @@
+[gd_scene load_steps=8 format=3 uid="uid://d2dody4bbiuyl"]
+
+[ext_resource type="Script" path="res://survivors_game.gd" id="1_0xvgk"]
+[ext_resource type="PackedScene" uid="uid://lf33senj0fhk" path="res://player.tscn" id="1_qq3yd"]
+[ext_resource type="Script" path="res://Level.gd" id="2_hphui"]
+[ext_resource type="PackedScene" uid="uid://cpbyosyi6tq7j" path="res://pine_tree.tscn" id="2_wpux6"]
+[ext_resource type="PackedScene" uid="uid://fiofxk3uocd1" path="res://pause_menu.tscn" id="4_p627j"]
+
+[sub_resource type="Curve2D" id="Curve2D_0cl3o"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -977, -655, 0, 0, 0, 0, 2341, -670, 0, 0, 0, 0, 2344, 1590, 0, 0, 0, 0, -1001.6, 1603.9, 0, 0, 0, 0, -980, -652)
+}
+point_count = 5
+
+[sub_resource type="Curve2D" id="Curve2D_o0vpq"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 14, -702, 0, 0, 0, 0, 301, -641, 0, 0, 0, 0, 440, -546, 0, 0, 0, 0, 584, -384, 0, 0, 0, 0, 639, -238, 0, 0, 0, 0, 669, -59, 0, 0, 0, 0, 659, 157, 0, 0, 0, 0, 639, 316, 0, 0, 0, 0, 553, 475, 0, 0, 0, 0, 400, 561, 0, 0, 0, 0, 231, 631, 0, 0, 0, 0, -61, 654, 0, 0, 0, 0, -399, 593, 0, 0, 0, 0, -553, 465, 0, 0, 0, 0, -651, 344, 0, 0, 0, 0, -706, 84, 0, 0, 0, 0, -719, -122, 0, 0, 0, 0, -684, -289, 0, 0, 0, 0, -598, -430, 0, 0, 0, 0, -492, -561, 0, 0, 0, 0, -376, -644, 0, 0, 0, 0, -215, -702, 0, 0, 0, 0, 14, -702)
+}
+point_count = 23
+
+[node name="Game" type="Node2D"]
+process_mode = 3
+y_sort_enabled = true
+script = ExtResource("1_0xvgk")
+
+[node name="Level" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_hphui")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Level"]
+layer = -30
+
+[node name="ColorRect" type="ColorRect" parent="Level/CanvasLayer"]
+offset_left = -442.0
+offset_top = -254.0
+offset_right = 1928.0
+offset_bottom = 1092.0
+
+[node name="Player" parent="Level" instance=ExtResource("1_qq3yd")]
+unique_name_in_owner = true
+position = Vector2(759, 425)
+
+[node name="Path2D" type="Path2D" parent="Level/Player"]
+position = Vector2(-542.923, -323)
+scale = Vector2(0.77983, 0.682089)
+curve = SubResource("Curve2D_0cl3o")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Level/Player/Path2D"]
+unique_name_in_owner = true
+position = Vector2(-977, -655)
+rotation = -0.00452077
+
+[node name="CirclePath" type="Path2D" parent="Level/Player"]
+curve = SubResource("Curve2D_o0vpq")
+
+[node name="CirclePathFollow" type="PathFollow2D" parent="Level/Player/CirclePath"]
+unique_name_in_owner = true
+position = Vector2(14, -702)
+rotation = 0.209427
+
+[node name="PineTree" parent="Level" instance=ExtResource("2_wpux6")]
+position = Vector2(476, 346)
+
+[node name="PineTree2" parent="Level" instance=ExtResource("2_wpux6")]
+position = Vector2(356, 422)
+
+[node name="GreenTimer" type="Timer" parent="Level"]
+wait_time = 0.307
+autostart = true
+
+[node name="RedTimer" type="Timer" parent="Level"]
+autostart = true
+
+[node name="YellowTimer" type="Timer" parent="Level"]
+wait_time = 15.0
+autostart = true
+
+[node name="GameOver" type="CanvasLayer" parent="Level"]
+unique_name_in_owner = true
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="Level/GameOver"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -461.0
+offset_top = -246.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.494118)
+
+[node name="Label" type="Label" parent="Level/GameOver/ColorRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -430.0
+offset_top = -102.5
+offset_right = 430.0
+offset_bottom = 102.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 150
+text = "GAME OVER"
+
+[node name="PauseMenu" parent="." instance=ExtResource("4_p627j")]
+unique_name_in_owner = true
+process_mode = 2
+visible = false
+z_index = 100
+offset_left = 759.0
+offset_top = 386.0
+offset_right = 759.0
+offset_bottom = 386.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[connection signal="health_depleted" from="Level/Player" to="." method="_on_player_health_depleted"]
+[connection signal="timeout" from="Level/GreenTimer" to="Level" method="_on_timer_timeout"]
+[connection signal="timeout" from="Level/RedTimer" to="Level" method="_on_red_timer_timeout"]
+[connection signal="timeout" from="Level/YellowTimer" to="Level" method="_on_yellow_timer_timeout"]

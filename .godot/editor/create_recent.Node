@@ -1,0 +1,14 @@
+Node2D
+PathFollow2D
+Path2D
+Area2D
+CollisionShape2D
+Timer
+ColorRect
+CanvasLayer
+Button
+VBoxContainer
+MarginContainer
+AnimatedSprite2D
+Label
+CharacterBody2D
